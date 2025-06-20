@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import blogService from "./services/blogs";
+import blogService from "../services/blogs";
 
-import BlogList from "./components/BlogList";
-import AddBlogForm from "./components/AddBlogForm";
-import LoginForm from "./components/LoginForm";
-import Alert from "./components/Alert";
+import BlogList from "./BlogList";
+import AddBlogForm from "./AddBlogForm";
+import LoginForm from "./LoginForm";
+import Alert from "./Alert";
+
+import "../app.css";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -65,6 +67,7 @@ const App = () => {
             user={user}
             setUser={setUser}
             refreshBlogs={refreshBlogs}
+            handleAlert={handleAlert}
           />
         </>
       )}

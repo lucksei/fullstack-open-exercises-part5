@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const AddBlogForum = ({ refreshBlogs }) => {
+const AddBlogForum = ({ refreshBlogs, handleAlert }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -9,14 +9,19 @@ const AddBlogForum = ({ refreshBlogs }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const response = await blogService.create({
-      title: title,
-      author: author,
-      url: url,
-    });
-    console.log(response);
+    try {
+      const response = await blogService.create({
+        title: title,
+        author: author,
+        url: url,
+      });
+      console.log(response);
 
-    refreshBlogs();
+      refreshBlogs();
+      handleAlert("success", `A new blog! '${title}'`);
+    } catch (exception) {
+      handleAlert("error", "Could not create new blog entry");
+    }
   };
 
   return (
