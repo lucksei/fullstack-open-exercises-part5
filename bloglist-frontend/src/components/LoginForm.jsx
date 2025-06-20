@@ -1,26 +1,23 @@
 import { useState, useEffect } from "react";
 import loginService from "../services/login";
 
-const LoginForm = ({ user, setUser }) => {
+const LoginForm = ({ user, setUser, handleError }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
       const user = await loginService.login({ username, password });
-      console.log(user);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
+
       setUser(user);
+
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      handleError("Wrong credentials");
     }
   };
 
@@ -34,7 +31,6 @@ const LoginForm = ({ user, setUser }) => {
 
   return (
     <>
-      <h2>log in to application</h2>
       <form onSubmit={handleLogin}>
         <div>
           username
