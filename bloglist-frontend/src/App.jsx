@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import blogService from "./services/blogs";
 
 import BlogList from "./components/BlogList";
-import AddBlogForm from "./components/AddBlogForum";
+import AddBlogForm from "./components/AddBlogForm";
 import LoginForm from "./components/LoginForm";
 import Alert from "./components/Alert";
 
@@ -60,9 +60,12 @@ const App = () => {
             message={alert.message}
             hidden={alert.hidden}
           />
-          <BlogList blogs={blogs} user={user} setUser={setUser} />
-          <h2>create new</h2>
-          <AddBlogForm refreshBlogs={refreshBlogs} />
+          <BlogList
+            blogs={blogs}
+            user={user}
+            setUser={setUser}
+            refreshBlogs={refreshBlogs}
+          />
         </>
       )}
     </div>

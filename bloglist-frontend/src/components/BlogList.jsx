@@ -1,6 +1,7 @@
 import Blog from "./Blog";
+import AddBlogForm from "./AddBlogForm";
 
-const BlogList = ({ blogs, user, setUser }) => {
+const BlogList = ({ blogs, user, setUser, refreshBlogs }) => {
   const handleLogout = async (event) => {
     event.preventDefault();
     window.localStorage.removeItem("loggedUser");
@@ -13,6 +14,8 @@ const BlogList = ({ blogs, user, setUser }) => {
         <span>{user.username} logged in</span>
         <button onClick={handleLogout}>logout</button>
       </div>
+      <h3>create new</h3>
+      <AddBlogForm refreshBlogs={refreshBlogs} />
       <br />
       <div>
         {blogs.map((blog) => (
