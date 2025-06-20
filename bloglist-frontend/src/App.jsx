@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import blogService from "./services/blogs";
 
 import BlogList from "./components/BlogList";
+import AddBlogForm from "./components/AddBlogForum";
 import LoginForm from "./components/LoginForm";
 import Alert from "./components/Alert";
 
@@ -10,16 +11,34 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [alert, setAlert] = useState({ hidden: true });
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, [setBlogs]);
-
   const handleAlert = (type, message) => {
     setAlert({ type: type, message: message, hidden: false });
     setTimeout(() => {
       setAlert({ ...alert, hidden: true });
     }, 5000);
   };
+
+  const handleSetUser = (user) => {
+    blogService.setToken(user.token);
+    setUser(user);
+  };
+
+  const refreshBlogs = async () => {
+    const blogs = await blogService.getAll();
+    setBlogs(blogs);
+  };
+
+  useEffect(() => {
+    refreshBlogs();
+  }, [refreshBlogs]);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      handleSetUser(user);
+    }
+  }, [setUser]);
 
   return (
     <div>
@@ -31,7 +50,7 @@ const App = () => {
             message={alert.message}
             hidden={alert.hidden}
           />
-          <LoginForm user={user} setUser={setUser} handleAlert={handleAlert} />
+          <LoginForm handleSetUser={handleSetUser} handleAlert={handleAlert} />
         </>
       ) : (
         <>
@@ -42,6 +61,8 @@ const App = () => {
             hidden={alert.hidden}
           />
           <BlogList blogs={blogs} user={user} setUser={setUser} />
+          <h2>create new</h2>
+          <AddBlogForm refreshBlogs={refreshBlogs} />
         </>
       )}
     </div>

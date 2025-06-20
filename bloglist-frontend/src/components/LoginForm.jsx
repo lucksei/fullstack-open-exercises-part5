@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import loginService from "../services/login";
 
-const LoginForm = ({ user, setUser, handleError }) => {
+const LoginForm = ({ handleSetUser, handleError }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,7 +12,7 @@ const LoginForm = ({ user, setUser, handleError }) => {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
 
-      setUser(user);
+      handleSetUser(user);
 
       setUsername("");
       setPassword("");
@@ -20,14 +20,6 @@ const LoginForm = ({ user, setUser, handleError }) => {
       handleError("Wrong credentials");
     }
   };
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-    }
-  }, [user]);
 
   return (
     <>

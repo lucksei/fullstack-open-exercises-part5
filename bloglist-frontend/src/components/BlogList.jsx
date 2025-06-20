@@ -13,7 +13,7 @@ const BlogList = ({ blogs, user, setUser }) => {
         <span>{user.username} logged in</span>
         <button onClick={handleLogout}>logout</button>
       </div>
-
+      <br />
       <div>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
