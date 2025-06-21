@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import blogService from "../services/blogs";
+import blogService from '../services/blogs';
 
 const Blog = ({ blog, handleEditBlog, handleDeleteBlog }) => {
   const [extended, setExtended] = useState(true);
@@ -37,9 +37,9 @@ const Blog = ({ blog, handleEditBlog, handleDeleteBlog }) => {
     <>
       <div className="blog">
         {blog.title} {blog.author}
-        <button onClick={toggleExtended}>{extended ? "show" : "hide"}</button>
-        <div style={{ display: extended ? "none" : "" }}>
-          <a href={blog.url}>{blog.url}</a>{" "}
+        <button onClick={toggleExtended}>{extended ? 'show' : 'hide'}</button>
+        <div style={{ display: extended ? 'none' : '' }}>
+          <a href={blog.url}>{blog.url}</a>{' '}
           <div>
             likes {blog.likes}
             <button onClick={upvoteBlog}>▲</button>

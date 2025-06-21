@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import blogService from "../services/blogs";
+import { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import blogService from '../services/blogs';
 
-import Blog from "./Blog";
-import AddBlogForm from "./AddBlogForm";
-import Toggleable from "./Toggleable";
+import Blog from './Blog';
+import AddBlogForm from './AddBlogForm';
+import Toggleable from './Toggleable';
 
 const sortBlogsByLikes = (blogs) => {
   return blogs.sort((a, b) => b.likes - a.likes);
@@ -25,7 +26,7 @@ const BlogList = ({ user, setUser, handleAlert }) => {
 
   const handleLogout = async (event) => {
     event.preventDefault();
-    window.localStorage.removeItem("loggedUser");
+    window.localStorage.removeItem('loggedUser');
     setUser(null);
   };
 
@@ -68,6 +69,12 @@ const BlogList = ({ user, setUser, handleAlert }) => {
       </div>
     </>
   );
+};
+
+BlogList.propTypes = {
+  user: PropTypes.func.isRequired,
+  setUser: PropTypes.func.isRequired,
+  handleAlert: PropTypes.func.isRequired,
 };
 
 export default BlogList;

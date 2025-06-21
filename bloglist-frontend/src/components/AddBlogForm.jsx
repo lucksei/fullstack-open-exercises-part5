@@ -1,10 +1,10 @@
-import { useState } from "react";
-import blogService from "../services/blogs";
+import { useState } from 'react';
+import blogService from '../services/blogs';
 
 const AddBlogForum = ({ handleAddBlog, handleAlert }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,9 +18,9 @@ const AddBlogForum = ({ handleAddBlog, handleAlert }) => {
 
       handleAddBlog(newBlog);
 
-      handleAlert("success", `A new blog! '${newBlog.title}'`);
+      handleAlert('success', `A new blog! '${newBlog.title}'`);
     } catch (exception) {
-      handleAlert("error", "Could not create new blog entry");
+      handleAlert('error', 'Could not create new blog entry');
     }
   };
 

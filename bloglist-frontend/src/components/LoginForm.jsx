@@ -1,23 +1,23 @@
-import { useState } from "react";
-import loginService from "../services/login";
+import { useState } from 'react';
+import loginService from '../services/login';
 
 const LoginForm = ({ handleSetUser, handleAlert }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
       const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      window.localStorage.setItem('loggedUser', JSON.stringify(user));
 
       handleSetUser(user);
 
-      setUsername("");
-      setPassword("");
+      setUsername('');
+      setPassword('');
     } catch (exception) {
-      handleAlert("error", "Wrong credentials");
+      handleAlert('error', 'Wrong credentials');
     }
   };
 

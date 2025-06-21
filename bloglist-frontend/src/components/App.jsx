@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import blogService from "../services/blogs";
+import { useState, useEffect } from 'react';
+import blogService from '../services/blogs';
 
-import BlogList from "./BlogList";
-import LoginForm from "./LoginForm";
-import Alert from "./Alert";
+import BlogList from './BlogList';
+import LoginForm from './LoginForm';
+import Alert from './Alert';
 
-import "../app.css";
+import '../app.css';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -24,7 +24,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       handleSetUser(user);
