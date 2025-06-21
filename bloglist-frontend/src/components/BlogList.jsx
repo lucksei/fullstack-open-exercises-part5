@@ -14,14 +14,14 @@ const BlogList = ({ user, setUser, handleAlert }) => {
     setUser(null);
   };
 
-  const refreshBlogs = async () => {
+  useEffect(async () => {
     const blogs = await blogService.getAll();
     setBlogs(blogs);
-  };
-
-  useEffect(() => {
-    refreshBlogs();
   }, []);
+
+  const handleAddBlog = (newBlog) => {
+    setBlogs(blogs.concat(newBlog));
+  };
 
   const handleEditBlog = (editedBlog) => {
     setBlogs(
@@ -37,7 +37,7 @@ const BlogList = ({ user, setUser, handleAlert }) => {
       </div>
       <br />
       <Toggleable buttonLabel="new note">
-        <AddBlogForm refreshBlogs={refreshBlogs} handleAlert={handleAlert} />
+        <AddBlogForm handleAddBlog={handleAddBlog} handleAlert={handleAlert} />
       </Toggleable>
       <div>
         {blogs.map((blog) => (
