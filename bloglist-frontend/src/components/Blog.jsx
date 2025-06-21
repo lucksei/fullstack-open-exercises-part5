@@ -31,7 +31,7 @@ const Blog = ({ blog, handleEditBlog }) => {
         {blog.title} {blog.author}
         <button onClick={toggleExtended}>{extended ? "show" : "hide"}</button>
         <div style={{ display: extended ? "none" : "" }}>
-          <div>{blog.url}</div>{" "}
+          <a href={blog.url}>{blog.url}</a>{" "}
           <div>
             likes {blog.likes}
             <button onClick={upvoteBlog}>▲</button>
