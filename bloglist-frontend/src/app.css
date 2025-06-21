@@ -2,10 +2,7 @@
   border: solid 1px;
   border-radius: 5px;
   padding: 5px;
-}
-
-.blog button {
-  margin-left: 5px;
+  margin-bottom: 3px;
 }
 
 .alert.success {

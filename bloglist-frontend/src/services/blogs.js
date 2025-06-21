@@ -21,4 +21,16 @@ const create = async (newBlog) => {
   return response.data
 }
 
-export default { getAll, setToken, create }
+const update = async (blog) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+
+  // Modify the blog user to only send its id
+  blog.user = blog.user.id
+
+  const response = await axios.patch(`${baseUrl}/${blog.id}`, blog, config)
+  return response.data
+}
+
+export default { getAll, setToken, create, update }

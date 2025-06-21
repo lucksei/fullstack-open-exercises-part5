@@ -32,7 +32,7 @@ const App = () => {
 
   useEffect(() => {
     refreshBlogs();
-  }, [refreshBlogs]);
+  }, [setBlogs]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
