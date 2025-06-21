@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import blogService from "../services/blogs";
 
 import Blog from "./Blog";
@@ -12,23 +12,26 @@ const sortBlogsByLikes = (blogs) => {
 const BlogList = ({ user, setUser, handleAlert }) => {
   const [blogs, setBlogs] = useState([]);
 
-  const handleLogout = async (event) => {
-    event.preventDefault();
-    window.localStorage.removeItem("loggedUser");
-    setUser(null);
-  };
+  const toggleRef = useRef();
+
+  useEffect(() => {
+    loadBlogs();
+  }, []);
 
   const loadBlogs = async () => {
     const blogs = await blogService.getAll();
     setBlogs(sortBlogsByLikes(blogs));
   };
 
-  useEffect(() => {
-    loadBlogs();
-  }, []);
+  const handleLogout = async (event) => {
+    event.preventDefault();
+    window.localStorage.removeItem("loggedUser");
+    setUser(null);
+  };
 
   const handleAddBlog = (newBlog) => {
     setBlogs(sortBlogsByLikes(blogs.concat(newBlog)));
+    toggleRef.current.toggleVisibility();
   };
 
   const handleEditBlog = (editedBlog) => {
@@ -50,7 +53,7 @@ const BlogList = ({ user, setUser, handleAlert }) => {
         <button onClick={handleLogout}>logout</button>
       </div>
       <br />
-      <Toggleable buttonLabel="new note">
+      <Toggleable buttonLabel="new note" ref={toggleRef}>
         <AddBlogForm handleAddBlog={handleAddBlog} handleAlert={handleAlert} />
       </Toggleable>
       <div>
