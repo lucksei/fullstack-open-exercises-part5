@@ -29,8 +29,14 @@ const update = async (blog) => {
   // Modify the blog user to only send its id
   blog.user = blog.user.id
 
-  const response = await axios.patch(`${baseUrl}/${blog.id}`, blog, config)
-  return response.data
+  await axios.patch(`${baseUrl}/${blog.id}`, blog, config)
 }
 
-export default { getAll, setToken, create, update }
+const remove = async (blogId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  await axios.delete(`${baseUrl}/${blogId}`, config)
+}
+
+export default { getAll, setToken, create, update, remove }

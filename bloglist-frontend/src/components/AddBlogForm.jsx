@@ -15,7 +15,6 @@ const AddBlogForum = ({ handleAddBlog, handleAlert }) => {
         author: author,
         url: url,
       });
-      console.log(newBlog);
 
       handleAddBlog(newBlog);
 

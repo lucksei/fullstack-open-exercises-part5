@@ -39,6 +39,10 @@ const BlogList = ({ user, setUser, handleAlert }) => {
     );
   };
 
+  const handleDeleteBlog = (deleteBlog) => {
+    setBlogs(blogs.filter((blog) => blog.id !== deleteBlog.id));
+  };
+
   return (
     <>
       <div>
@@ -51,7 +55,12 @@ const BlogList = ({ user, setUser, handleAlert }) => {
       </Toggleable>
       <div>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} handleEditBlog={handleEditBlog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleEditBlog={handleEditBlog}
+            handleDeleteBlog={handleDeleteBlog}
+          />
         ))}
       </div>
     </>

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, handleEditBlog }) => {
+const Blog = ({ blog, handleEditBlog, handleDeleteBlog }) => {
   const [extended, setExtended] = useState(true);
 
   const toggleExtended = () => {
@@ -25,6 +25,14 @@ const Blog = ({ blog, handleEditBlog }) => {
     handleEditBlog({ ...blog, likes: blog.likes - 1 });
   };
 
+  const deleteBlog = async () => {
+    if (!window.confirm(`delete blog ${blog.name}?`)) {
+      return;
+    }
+    blogService.remove(blog.id);
+    handleDeleteBlog(blog);
+  };
+
   return (
     <>
       <div className="blog">
@@ -38,6 +46,9 @@ const Blog = ({ blog, handleEditBlog }) => {
             <button onClick={downvoteBlog}>▼</button>
           </div>
           <div>{blog.user.username}</div>
+          <button type="button" onClick={deleteBlog}>
+            delete
+          </button>
         </div>
       </div>
     </>
