@@ -5,6 +5,10 @@ import Blog from "./Blog";
 import AddBlogForm from "./AddBlogForm";
 import Toggleable from "./Toggleable";
 
+const sortBlogsByLikes = (blogs) => {
+  return blogs.sort((a, b) => b.likes - a.likes);
+};
+
 const BlogList = ({ user, setUser, handleAlert }) => {
   const [blogs, setBlogs] = useState([]);
 
@@ -14,18 +18,24 @@ const BlogList = ({ user, setUser, handleAlert }) => {
     setUser(null);
   };
 
-  useEffect(async () => {
+  const loadBlogs = async () => {
     const blogs = await blogService.getAll();
-    setBlogs(blogs);
+    setBlogs(sortBlogsByLikes(blogs));
+  };
+
+  useEffect(() => {
+    loadBlogs();
   }, []);
 
   const handleAddBlog = (newBlog) => {
-    setBlogs(blogs.concat(newBlog));
+    setBlogs(sortBlogsByLikes(blogs.concat(newBlog)));
   };
 
   const handleEditBlog = (editedBlog) => {
     setBlogs(
-      blogs.map((blog) => (blog.id === editedBlog.id ? editedBlog : blog))
+      sortBlogsByLikes(
+        blogs.map((blog) => (blog.id === editedBlog.id ? editedBlog : blog))
+      )
     );
   };
 
