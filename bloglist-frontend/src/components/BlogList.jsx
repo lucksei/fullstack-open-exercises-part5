@@ -1,12 +1,32 @@
+import { useState, useEffect } from "react";
+import blogService from "../services/blogs";
+
 import Blog from "./Blog";
 import AddBlogForm from "./AddBlogForm";
 import Toggleable from "./Toggleable";
 
-const BlogList = ({ blogs, user, setUser, refreshBlogs, handleAlert }) => {
+const BlogList = ({ user, setUser, handleAlert }) => {
+  const [blogs, setBlogs] = useState([]);
+
   const handleLogout = async (event) => {
     event.preventDefault();
     window.localStorage.removeItem("loggedUser");
     setUser(null);
+  };
+
+  const refreshBlogs = async () => {
+    const blogs = await blogService.getAll();
+    setBlogs(blogs);
+  };
+
+  useEffect(() => {
+    refreshBlogs();
+  }, []);
+
+  const handleEditBlog = (editedBlog) => {
+    setBlogs(
+      blogs.map((blog) => (blog.id === editedBlog.id ? editedBlog : blog))
+    );
   };
 
   return (
@@ -21,7 +41,7 @@ const BlogList = ({ blogs, user, setUser, refreshBlogs, handleAlert }) => {
       </Toggleable>
       <div>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} refreshBlogs={refreshBlogs} />
+          <Blog key={blog.id} blog={blog} handleEditBlog={handleEditBlog} />
         ))}
       </div>
     </>

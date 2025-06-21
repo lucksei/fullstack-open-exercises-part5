@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, refreshBlogs }) => {
+const Blog = ({ blog, handleEditBlog }) => {
   const [extended, setExtended] = useState(true);
 
   const toggleExtended = () => {
@@ -10,21 +10,19 @@ const Blog = ({ blog, refreshBlogs }) => {
   };
 
   const upvoteBlog = async () => {
-    console.log("upvote");
-    const response = await blogService.update({
+    await blogService.update({
       ...blog,
       likes: blog.likes + 1,
     });
-    refreshBlogs();
+    handleEditBlog({ ...blog, likes: blog.likes + 1 });
   };
 
   const downvoteBlog = async () => {
-    console.log("downvote");
-    const response = await blogService.update({
+    await blogService.update({
       ...blog,
       likes: blog.likes - 1,
     });
-    refreshBlogs();
+    handleEditBlog({ ...blog, likes: blog.likes - 1 });
   };
 
   return (

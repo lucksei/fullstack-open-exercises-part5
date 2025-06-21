@@ -2,14 +2,12 @@ import { useState, useEffect } from "react";
 import blogService from "../services/blogs";
 
 import BlogList from "./BlogList";
-import AddBlogForm from "./AddBlogForm";
 import LoginForm from "./LoginForm";
 import Alert from "./Alert";
 
 import "../app.css";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [alert, setAlert] = useState({ hidden: true });
 
@@ -24,15 +22,6 @@ const App = () => {
     blogService.setToken(user.token);
     setUser(user);
   };
-
-  const refreshBlogs = async () => {
-    const blogs = await blogService.getAll();
-    setBlogs(blogs);
-  };
-
-  useEffect(() => {
-    refreshBlogs();
-  }, [setBlogs]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -62,13 +51,7 @@ const App = () => {
             message={alert.message}
             hidden={alert.hidden}
           />
-          <BlogList
-            blogs={blogs}
-            user={user}
-            setUser={setUser}
-            refreshBlogs={refreshBlogs}
-            handleAlert={handleAlert}
-          />
+          <BlogList user={user} setUser={setUser} handleAlert={handleAlert} />
         </>
       )}
     </div>
