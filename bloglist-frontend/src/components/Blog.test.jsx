@@ -3,7 +3,7 @@ import Blog from './Blog';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 
-describe('<Blog />', () => {
+describe('<Blog /> inside container', () => {
   let container;
 
   beforeEach(() => {
@@ -45,14 +45,39 @@ describe('<Blog />', () => {
     const urlElement = blogElement.querySelector('.url');
     expect(urlElement).toBeVisible();
   });
+});
 
-  test('<Blog /> the like button can be clicked twice', () => {
+describe('<Blog /> with mock handler stubs', () => {
+  let container;
+  const mockHandlerEdit = vi.fn();
+  const mockHandlerDelete = vi.fn();
+
+  beforeEach(() => {
+    const blog = {
+      title: 'Component testing is done with react-testing-library',
+      author: 'Testman',
+      likes: 0,
+      url: 'http://localhost:1234/',
+      user: 'asdf',
+    };
+    container = render(
+      <Blog
+        blog={blog}
+        handleEditBlog={mockHandlerEdit}
+        handleDeleteBlog={mockHandlerDelete}
+      />
+    ).container;
+  });
+
+  test('<Blog /> the like button can be clicked twice', async () => {
     const blogElement = container.querySelector('.blog');
     const user = userEvent.setup();
 
     const likeButton = blogElement.querySelector('.btn-like');
-    const dislikeButton = blogElement.querySelector('.btn-dislike');
 
-    const mockHandler = vi.fn();
+    await user.click(likeButton);
+    await user.click(likeButton);
+
+    expect(mockHandlerEdit.mock.calls).toHaveLength(2);
   });
 });
