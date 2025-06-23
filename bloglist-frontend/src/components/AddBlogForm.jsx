@@ -27,10 +27,11 @@ const AddBlogForum = ({ handleAddBlog, handleAlert }) => {
   return (
     <>
       <h3>create new</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="blog-form">
         <div>
           title:
           <input
+            className="input-title"
             type="text"
             value={title}
             name="Title"
@@ -40,6 +41,7 @@ const AddBlogForum = ({ handleAddBlog, handleAlert }) => {
         <div>
           author:
           <input
+            className="input-author"
             type="text"
             value={author}
             name="Author"
@@ -49,13 +51,16 @@ const AddBlogForum = ({ handleAddBlog, handleAlert }) => {
         <div>
           url:
           <input
+            className="input-url"
             type="text"
             value={url}
             name="Url"
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button type="submit">create</button>
+        <button className="btn-submit" type="submit">
+          create
+        </button>
       </form>
     </>
   );
