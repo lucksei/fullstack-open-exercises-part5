@@ -30,11 +30,12 @@ describe('<AddBlogForm />', () => {
     await user.keyboard('http://localhost:42069/test');
     await user.click(submitButtonElement);
 
-    // screen.debug(blogFormElement);
-
     await waitFor(() => {
-      expect(mockAddBlogHandler).toBeCalled();
+      expect(mockAddBlogHandler).toBeCalledWith({
+        title: 'title test',
+        author: 'author test',
+        url: 'http://localhost:42069/test',
+      });
     });
-    // expect(mockAddBlogHandler.mock.calls).toHaveLength(1);
   });
 });

@@ -10,14 +10,12 @@ const AddBlogForum = ({ handleAddBlog, handleAlert }) => {
     event.preventDefault();
 
     try {
-      const newBlog = await blogService.create({
+      const newBlog = {
         title: title,
         author: author,
         url: url,
-      });
-
-      handleAddBlog(newBlog);
-
+      };
+      await handleAddBlog(newBlog);
       handleAlert('success', `A new blog! '${newBlog.title}'`);
     } catch (exception) {
       handleAlert('error', 'Could not create new blog entry');
