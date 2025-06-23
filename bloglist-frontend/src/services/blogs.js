@@ -26,10 +26,10 @@ const update = async (blog) => {
     headers: { Authorization: token }
   }
 
-  // Modify the blog user to only send its id
-  blog.user = blog.user.id
+  // Modify the blog so that the user field has only its id as a string
+  const blogRequest = { ...blog, user: blog.user.id }
 
-  await axios.patch(`${baseUrl}/${blog.id}`, blog, config)
+  await axios.patch(`${baseUrl}/${blogRequest.id}`, blogRequest, config)
 }
 
 const remove = async (blogId) => {

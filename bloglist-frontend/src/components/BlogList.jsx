@@ -35,7 +35,8 @@ const BlogList = ({ user, setUser, handleAlert }) => {
     toggleRef.current.toggleVisibility();
   };
 
-  const handleEditBlog = (editedBlog) => {
+  const handleEditBlog = async (editedBlog) => {
+    await blogService.update(editedBlog);
     setBlogs(
       sortBlogsByLikes(
         blogs.map((blog) => (blog.id === editedBlog.id ? editedBlog : blog))
@@ -43,7 +44,11 @@ const BlogList = ({ user, setUser, handleAlert }) => {
     );
   };
 
-  const handleDeleteBlog = (deleteBlog) => {
+  const handleDeleteBlog = async (deleteBlog) => {
+    if (!window.confirm(`delete blog ${deleteBlog.name}?`)) {
+      return;
+    }
+    blogService.remove(deleteBlog.id);
     setBlogs(blogs.filter((blog) => blog.id !== deleteBlog.id));
   };
 
@@ -62,8 +67,8 @@ const BlogList = ({ user, setUser, handleAlert }) => {
           <Blog
             key={blog.id}
             blog={blog}
-            handleEditBlog={handleEditBlog}
             handleDeleteBlog={handleDeleteBlog}
+            handleEditBlog={handleEditBlog}
           />
         ))}
       </div>
@@ -72,7 +77,7 @@ const BlogList = ({ user, setUser, handleAlert }) => {
 };
 
 BlogList.propTypes = {
-  user: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
   setUser: PropTypes.func.isRequired,
   handleAlert: PropTypes.func.isRequired,
 };
