@@ -1,9 +1,20 @@
 const { test, expect, beforeEach, describe, } = require('@playwright/test');
 // @ts-ignore
 const { log } = require('console');
+const { request } = require('http');
 
 describe('Blog app', () => {
-    beforeEach(async ({ page }) => {
+    beforeEach(async ({ page, request }) => {
+        // Reset backend 
+        await request.post('http://localhost:3001/api/testing/reset')
+        await request.post('http://localhost:3001/api/users', {
+            data: {
+                name: "Bobbert Root",
+                username: 'root',
+                password: 'sekret',
+            }
+        })
+        // Load page
         await page.goto('http://localhost:5173')
     })
 
@@ -47,10 +58,38 @@ describe('Blog app', () => {
             const loginButtonElement = await page.getByRole('button', { name: 'login' })
             await loginButtonElement.click()
 
-            await setTimeout(() => { }, 3000)
-
             const blogsTitleElement = await page.locator('h2', { hasText: 'blogs' })
             await expect(blogsTitleElement).not.toBeAttached()
+        })
+    })
+
+    describe('When logged in', () => {
+        beforeEach(async ({ page }) => {
+            const loginUsernameElement = await page.locator('input[name="Username"]')
+            await loginUsernameElement.fill("root")
+
+            const loginPasswordElement = await page.locator('input[name="Password"]')
+            await loginPasswordElement.fill("sekret")
+
+            const loginButtonElement = await page.getByRole('button', { name: 'login' })
+            await loginButtonElement.click()
+        })
+
+        test('a new blog can be created', async ({ page }) => {
+            const titleInputElement = await page.locator('input[name="Title"]')
+            await titleInputElement.fill("Title test")
+
+            const authorInputElement = await page.locator('input[name="Author"]')
+            await authorInputElement.fill("Author test")
+
+            const urlInputElement = await page.locator('input[name="Url"]')
+            await urlInputElement.fill("http://localhost:42069/")
+
+            const createBlogElement = await page.locator('button', { hasText: 'create' })
+            await createBlogElement.click()
+
+            const newBlogElement = await page.locator('.blog', { hasText: 'Title test Author test' })
+            await expect(newBlogElement).toBeVisible()
         })
     })
 })
