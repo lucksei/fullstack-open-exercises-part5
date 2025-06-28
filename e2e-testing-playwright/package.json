@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "app:start": "node startAppScript.js",
     "test": "playwright test --project=firefox",
     "test:ui": "playwright test --project=firefox --ui",
+    "test:ui-wsl": "DISPLAY=$DISPLAY npx playwright test --project=firefox --ui",
     "test:report": "playwright show-report"
   },
   "keywords": [],
