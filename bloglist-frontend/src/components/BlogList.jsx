@@ -31,8 +31,8 @@ const BlogList = ({ user, setUser, handleAlert }) => {
   };
 
   const handleAddBlog = async (newBlog) => {
-    await blogService.create(newBlog);
-    setBlogs(sortBlogsByLikes(blogs.concat(newBlog)));
+    const newBlogResponse = await blogService.create(newBlog);
+    setBlogs(sortBlogsByLikes(blogs.concat(newBlogResponse)));
     toggleRef.current.toggleVisibility();
   };
 
