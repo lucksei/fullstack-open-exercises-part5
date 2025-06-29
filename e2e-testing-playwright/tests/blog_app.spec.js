@@ -3,6 +3,34 @@ const { test, expect, beforeEach, describe, } = require('@playwright/test');
 const { log } = require('console');
 const { request } = require('http');
 
+const loginHelper = async (page, username, password) => {
+  const loginUsernameElement = await page.locator('input[name="Username"]')
+  await loginUsernameElement.fill(username)
+
+  const loginPasswordElement = await page.locator('input[name="Password"]')
+  await loginPasswordElement.fill(password)
+
+  const loginButtonElement = await page.getByRole('button', { name: 'login' })
+  await loginButtonElement.click()
+}
+const createBlogHelper = async (page, title, author, url) => {
+  const NewBlogButtonElement = await page.getByRole('button', { name: 'new blog' })
+  if (await NewBlogButtonElement.isVisible()) {
+    await NewBlogButtonElement.click()
+  }
+  const titleInputElement = await page.locator('input[name="Title"]')
+  await titleInputElement.fill(title)
+
+  const authorInputElement = await page.locator('input[name="Author"]')
+  await authorInputElement.fill(author)
+
+  const urlInputElement = await page.locator('input[name="Url"]')
+  await urlInputElement.fill(url)
+
+  const createBlogElement = await page.locator('button', { hasText: 'create' })
+  await createBlogElement.click()
+}
+
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
     // Reset backend 
@@ -40,30 +68,16 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      const loginUsernameElement = await page.locator('input[name="Username"]')
-      await loginUsernameElement.fill("root")
+      await loginHelper(page, "root", "sekret")
 
-      const loginPasswordElement = await page.locator('input[name="Password"]')
-      await loginPasswordElement.fill("sekret")
-
-      const loginButtonElement = await page.getByRole('button', { name: 'login' })
-      await loginButtonElement.click()
-
-      await setTimeout(() => { }, 3000)
+      // await setTimeout(() => { }, 3000)
 
       const blogsTitleElement = await page.locator('h2', { hasText: 'blogs' })
       await expect(blogsTitleElement).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      const loginUsernameElement = await page.locator('input[name="Username"]')
-      await loginUsernameElement.fill("root")
-
-      const loginPasswordElement = await page.locator('input[name="Password"]')
-      await loginPasswordElement.fill("wrong-password")
-
-      const loginButtonElement = await page.getByRole('button', { name: 'login' })
-      await loginButtonElement.click()
+      await loginHelper(page, "root", "wrongPassword")
 
       const blogsTitleElement = await page.locator('h2', { hasText: 'blogs' })
       await expect(blogsTitleElement).not.toBeAttached()
@@ -72,14 +86,7 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      const loginUsernameElement = await page.locator('input[name="Username"]')
-      await loginUsernameElement.fill("root")
-
-      const loginPasswordElement = await page.locator('input[name="Password"]')
-      await loginPasswordElement.fill("sekret")
-
-      const loginButtonElement = await page.getByRole('button', { name: 'login' })
-      await loginButtonElement.click()
+      await loginHelper(page, "root", "sekret")
     })
 
     test('log out', async ({ page }) => {
@@ -91,17 +98,7 @@ describe('Blog app', () => {
     })
 
     test('a new blog can be created', async ({ page }) => {
-      const titleInputElement = await page.locator('input[name="Title"]')
-      await titleInputElement.fill("Title test")
-
-      const authorInputElement = await page.locator('input[name="Author"]')
-      await authorInputElement.fill("Author test")
-
-      const urlInputElement = await page.locator('input[name="Url"]')
-      await urlInputElement.fill("http://localhost:42069/")
-
-      const createBlogElement = await page.locator('button', { hasText: 'create' })
-      await createBlogElement.click()
+      await createBlogHelper(page, "Title test", "Author test", "http://localhost:42069/")
 
       const newBlogElement = await page.locator('.blog', { hasText: 'Title test Author test' })
       await expect(newBlogElement).toBeVisible()
@@ -109,17 +106,7 @@ describe('Blog app', () => {
 
     describe('And a blog has been created', async () => {
       beforeEach(async ({ page }) => {
-        const titleInputElement = await page.locator('input[name="Title"]')
-        await titleInputElement.fill("Title test")
-
-        const authorInputElement = await page.locator('input[name="Author"]')
-        await authorInputElement.fill("Author test")
-
-        const urlInputElement = await page.locator('input[name="Url"]')
-        await urlInputElement.fill("http://localhost:42069/")
-
-        const createBlogElement = await page.locator('button', { hasText: 'create' })
-        await createBlogElement.click()
+        await createBlogHelper(page, "Title test", "Author test", "http://localhost:42069/")
       })
 
       test('show button shows the likes', async ({ page }) => {
@@ -167,31 +154,24 @@ describe('Blog app', () => {
         })
       })
     })
+    describe('Multiple blogs have been created and upvoted a different ammount of times', async () => {
+      beforeEach(async () => {
+        // Create first blog with 10 likes
+        await createBlogHelper(page, "First blog", "Test Author", "http://localhost:42069/")
+        // Create second blog with 1 like
+        await createBlogHelper(page, "Second blog", "Test Author", "http://localhost:42069/")
+        // Create third blog with 5 likes
+        await createBlogHelper(page, "Third blog", "Test Author", "http://localhost:42069/")
+      })
+    })
   })
   describe('When testUser2 created a blog', () => {
     beforeEach(async ({ page }) => {
       // Log in as testUser2 
-      const loginUsernameElement = await page.locator('input[name="Username"]')
-      await loginUsernameElement.fill("testUser2")
-
-      const loginPasswordElement = await page.locator('input[name="Password"]')
-      await loginPasswordElement.fill("alsosekret")
-
-      const loginButtonElement = await page.getByRole('button', { name: 'login' })
-      await loginButtonElement.click()
+      await loginHelper(page, "testUser2", "alsosekret")
 
       // Create blog
-      const titleInputElement = await page.locator('input[name="Title"]')
-      await titleInputElement.fill("Blog created by another user")
-
-      const authorInputElement = await page.locator('input[name="Author"]')
-      await authorInputElement.fill("Mario")
-
-      const urlInputElement = await page.locator('input[name="Url"]')
-      await urlInputElement.fill("http://localhost:42069/")
-
-      const createBlogElement = await page.locator('button', { hasText: 'create' })
-      await createBlogElement.click()
+      await createBlogHelper(page, "Blog created by another user", "Mario", "http://localhost:42069/")
 
       // Log out
       const logOutButtonElement = await page.getByRole('button', { name: 'logout' })
@@ -200,14 +180,7 @@ describe('Blog app', () => {
 
     describe('When logged in', () => {
       beforeEach(async ({ page }) => {
-        const loginUsernameElement = await page.locator('input[name="Username"]')
-        await loginUsernameElement.fill("root")
-
-        const loginPasswordElement = await page.locator('input[name="Password"]')
-        await loginPasswordElement.fill("sekret")
-
-        const loginButtonElement = await page.getByRole('button', { name: 'login' })
-        await loginButtonElement.click()
+        await loginHelper(page, "root", "sekret")
       })
       describe('And the show button has been pressed', async () => {
         beforeEach(async ({ page }) => {
@@ -218,10 +191,9 @@ describe('Blog app', () => {
 
         test('delete button is not shown for blog not owned', async ({ page }) => {
           const blogElement = await page.locator('.blog', { hasText: 'Blog created by another user Mario' })
-          const blogDeleteButtonElement = await blogElement.getByRole('button')
-          await expect(blogDeleteButtonElement).not.toBeDefined()
+          const blogDeleteButtonElement = await blogElement.getByRole('button', { name: 'delete' })
+          await expect(blogDeleteButtonElement).not.toBeVisible()
         })
-
       })
     })
   })
