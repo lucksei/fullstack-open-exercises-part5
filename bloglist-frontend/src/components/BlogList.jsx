@@ -60,7 +60,7 @@ const BlogList = ({ user, setUser, handleAlert }) => {
         <button onClick={handleLogout}>logout</button>
       </div>
       <br />
-      <Toggleable buttonLabel="new note" ref={toggleRef}>
+      <Toggleable buttonLabel="new blog" ref={toggleRef}>
         <AddBlogForm handleAddBlog={handleAddBlog} handleAlert={handleAlert} />
       </Toggleable>
       <div>
