@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, handleEditBlog, handleDeleteBlog }) => {
+const Blog = ({ blog, handleEditBlog, handleDeleteBlog, showDeleteButton }) => {
   const [extended, setExtended] = useState(true);
 
   const toggleExtended = () => {
@@ -34,9 +34,11 @@ const Blog = ({ blog, handleEditBlog, handleDeleteBlog }) => {
             </button>
           </div>
           <div>{blog.user.username}</div>
-          <button type="button" onClick={() => handleDeleteBlog(blog)}>
-            delete
-          </button>
+          {showDeleteButton ? (
+            <button type="button" onClick={() => handleDeleteBlog(blog)}>
+              delete
+            </button>
+          ) : null}
         </div>
       </div>
     </>

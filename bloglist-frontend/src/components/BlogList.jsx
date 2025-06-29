@@ -70,6 +70,9 @@ const BlogList = ({ user, setUser, handleAlert }) => {
             blog={blog}
             handleDeleteBlog={handleDeleteBlog}
             handleEditBlog={handleEditBlog}
+            showDeleteButton={
+              user.username === blog.user.username ? true : false
+            }
           />
         ))}
       </div>
