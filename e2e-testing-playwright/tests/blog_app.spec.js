@@ -29,6 +29,24 @@ const createBlogHelper = async (page, title, author, url) => {
 
   const createBlogElement = await page.locator('button', { hasText: 'create' })
   await createBlogElement.click()
+
+  const newBlogElement = await page.locator('.blog', { hasText: `${title} ${author}` })
+  await expect(newBlogElement).toBeVisible()
+  return newBlogElement
+}
+
+const likeBlogHelper = async (blogElement, times) => {
+  const blogShowButtonElement = await blogElement.getByRole('button', { name: 'show' })
+  await expect(blogShowButtonElement).toBeVisible()
+  await blogShowButtonElement.click()
+  const blogLikesButtonUpvoteElement = await blogElement.locator('button.btn-like')
+
+  for (let i = 0; i < times; i++) {
+    const blogLikesElement = await blogElement.getByText(/likes\ \d+/)
+    const textContent = await blogLikesElement.textContent()
+    await blogLikesButtonUpvoteElement.click()
+    await expect(blogLikesElement).not.toHaveText(textContent)
+  }
 }
 
 describe('Blog app', () => {
@@ -155,13 +173,23 @@ describe('Blog app', () => {
       })
     })
     describe('Multiple blogs have been created and upvoted a different ammount of times', async () => {
-      beforeEach(async () => {
+      beforeEach(async ({ page }) => {
         // Create first blog with 10 likes
-        await createBlogHelper(page, "First blog", "Test Author", "http://localhost:42069/")
+        const blogElement1 = await createBlogHelper(page, "First blog", "Test Author", "http://localhost:42069/")
+        await blogElement1.isVisible()
+        await likeBlogHelper(blogElement1, 3)
         // Create second blog with 1 like
-        await createBlogHelper(page, "Second blog", "Test Author", "http://localhost:42069/")
+        const blogElement2 = await createBlogHelper(page, "Second blog", "Test Author", "http://localhost:42069/")
+        await blogElement2.isVisible()
+        await likeBlogHelper(blogElement2, 1)
         // Create third blog with 5 likes
-        await createBlogHelper(page, "Third blog", "Test Author", "http://localhost:42069/")
+        const blogElement3 = await createBlogHelper(page, "Third blog", "Test Author", "http://localhost:42069/")
+        await blogElement3.isVisible()
+        await likeBlogHelper(blogElement3, 2)
+      })
+
+      test('blogs are arragned in order according to the likes', async ({ page }) => {
+        // ...
       })
     })
   })
