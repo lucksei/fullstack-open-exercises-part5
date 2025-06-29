@@ -14,6 +14,13 @@ describe('Blog app', () => {
         password: 'sekret',
       }
     })
+    await request.post('http://localhost:3001/api/users', {
+      data: {
+        name: "Another test user",
+        username: 'testUser2',
+        password: 'alsosekret',
+      }
+    })
     // Load page
     await page.goto('http://localhost:5173')
   })
@@ -73,6 +80,14 @@ describe('Blog app', () => {
 
       const loginButtonElement = await page.getByRole('button', { name: 'login' })
       await loginButtonElement.click()
+    })
+
+    test('log out', async ({ page }) => {
+      const logOutButtonElement = await page.getByRole('button', { name: 'logout' })
+      await logOutButtonElement.click()
+
+      const headerElement = await page.getByRole('heading', { name: 'log in to application' })
+      await expect(headerElement).toBeVisible()
     })
 
     test('a new blog can be created', async ({ page }) => {
@@ -150,6 +165,63 @@ describe('Blog app', () => {
 
           await expect(blogElement).not.toBeAttached()
         })
+      })
+    })
+  })
+  describe('When testUser2 created a blog', () => {
+    beforeEach(async ({ page }) => {
+      // Log in as testUser2 
+      const loginUsernameElement = await page.locator('input[name="Username"]')
+      await loginUsernameElement.fill("testUser2")
+
+      const loginPasswordElement = await page.locator('input[name="Password"]')
+      await loginPasswordElement.fill("alsosekret")
+
+      const loginButtonElement = await page.getByRole('button', { name: 'login' })
+      await loginButtonElement.click()
+
+      // Create blog
+      const titleInputElement = await page.locator('input[name="Title"]')
+      await titleInputElement.fill("Blog created by another user")
+
+      const authorInputElement = await page.locator('input[name="Author"]')
+      await authorInputElement.fill("Mario")
+
+      const urlInputElement = await page.locator('input[name="Url"]')
+      await urlInputElement.fill("http://localhost:42069/")
+
+      const createBlogElement = await page.locator('button', { hasText: 'create' })
+      await createBlogElement.click()
+
+      // Log out
+      const logOutButtonElement = await page.getByRole('button', { name: 'logout' })
+      await logOutButtonElement.click()
+    })
+
+    describe('When logged in', () => {
+      beforeEach(async ({ page }) => {
+        const loginUsernameElement = await page.locator('input[name="Username"]')
+        await loginUsernameElement.fill("root")
+
+        const loginPasswordElement = await page.locator('input[name="Password"]')
+        await loginPasswordElement.fill("sekret")
+
+        const loginButtonElement = await page.getByRole('button', { name: 'login' })
+        await loginButtonElement.click()
+      })
+      describe('And the show button has been pressed', async () => {
+        beforeEach(async ({ page }) => {
+          const blogElement = await page.locator('.blog', { hasText: 'Blog created by another user Mario' })
+          const blogShowButtonElement = await blogElement.locator('button', { hasText: 'show' })
+          await blogShowButtonElement.click()
+        })
+
+        test('delete button is not shown for blog not owned', async ({ page }) => {
+          const blogElement = await page.locator('.blog', { hasText: 'Blog created by another user Mario' })
+          const blogDeleteButtonElement = await blogElement.getByRole('button')
+          await expect(blogDeleteButtonElement).not.toBeDefined()
+        })
+
       })
     })
   })
