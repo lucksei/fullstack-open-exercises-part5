@@ -1,6 +1,6 @@
 const { test, expect, beforeEach, describe, } = require('@playwright/test');
 // @ts-ignore
-const { log } = require('console');
+const { log, debug } = require('console');
 const { request } = require('http');
 
 const loginHelper = async (page, username, password) => {
@@ -189,7 +189,16 @@ describe('Blog app', () => {
       })
 
       test('blogs are arragned in order according to the likes', async ({ page }) => {
-        // ...
+        // const blogElements = await page.locator('.blog').all()
+        let oldLikes = null
+        for (const blogElement of await page.locator('.blog').all()) {
+          const likesString = await blogElement.getByText(/likes\ \d+/).textContent()
+          const likes = Number(likesString.match(/likes\ (\d+)/)[1])
+          if (oldLikes) {
+            expect(oldLikes).toBeGreaterThanOrEqual(likes, "The order of the blogs is not correct")
+          }
+          oldLikes = likes
+        }
       })
     })
   })
