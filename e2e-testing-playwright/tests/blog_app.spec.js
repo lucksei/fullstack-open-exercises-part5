@@ -106,6 +106,7 @@ describe('Blog app', () => {
         const createBlogElement = await page.locator('button', { hasText: 'create' })
         await createBlogElement.click()
       })
+
       test('show button shows the likes', async ({ page }) => {
         const blogElement = await page.locator('.blog', { hasText: 'Title test Author test' })
 
@@ -122,17 +123,33 @@ describe('Blog app', () => {
         await expect(blogLikesButtonDownvoteElement).toBeVisible()
       })
 
-      test('a blog can be liked', async ({ page }) => {
-        const blogElement = await page.locator('.blog', { hasText: 'Title test Author test' })
+      describe('And the show button has been pressed', async () => {
+        beforeEach(async ({ page }) => {
+          const blogElement = await page.locator('.blog', { hasText: 'Title test Author test' })
 
-        const blogShowButtonElement = await blogElement.locator('button', { hasText: 'show' })
-        await blogShowButtonElement.click()
+          const blogShowButtonElement = await blogElement.locator('button', { hasText: 'show' })
+          await blogShowButtonElement.click()
+        })
 
-        const blogLikesButtonUpvoteElement = await blogElement.locator('button.btn-like')
-        await blogLikesButtonUpvoteElement.click()
+        test('a blog can be liked', async ({ page }) => {
+          const blogElement = await page.locator('.blog', { hasText: 'Title test Author test' })
 
-        const blogLikesElement = await blogElement.locator('.likes', { hasText: "likes 1" })
-        await expect(blogLikesElement).toBeDefined()
+          const blogLikesButtonUpvoteElement = await blogElement.locator('button.btn-like')
+          await blogLikesButtonUpvoteElement.click()
+
+          const blogLikesElement = await blogElement.locator('.likes', { hasText: "likes 1" })
+          await expect(blogLikesElement).toBeDefined()
+        })
+
+        test('the user who added a blog deletes it', async ({ page }) => {
+          const blogElement = await page.locator('.blog', { hasText: 'Title test Author test' })
+
+          const blogDeleteButtonElement = await blogElement.getByRole('button', { name: 'delete' })
+          page.on('dialog', async dialog => await dialog.accept())
+          await blogDeleteButtonElement.click()
+
+          await expect(blogElement).not.toBeAttached()
+        })
       })
     })
   })
